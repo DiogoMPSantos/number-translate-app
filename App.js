@@ -16,15 +16,17 @@ import {
   Text,
   useColorScheme,
   View,
+  TextInput,
+  Button,
+  Alert,
 } from 'react-native';
 
 import {
   Colors,
-  DebugInstructions,
   Header,
-  LearnMoreLinks,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import api from '../number_translate_app/src/services/api';
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -54,10 +56,10 @@ const Section = ({children, title}): Node => {
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const [number, onChangeNumber] = React.useState(null);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -70,20 +72,31 @@ const App: () => Node = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
+          <Section title="Primeiros Passos">
+            Bem vindo ao Number Translate App
+            Insira o número que deseja traduzir abaixo: 
           </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <TextInput
+              style={styles.input}
+              onChangeText={onChangeNumber}
+              value={number}
+              placeholder="Insira o Número aqui... ex: 10"
+              keyboardType="numeric"
+           />
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Traduzir"
+                onPress={() => {
+                  api.get(`/translate/${number}`)
+                  .then(function (response) {
+                    Alert.alert(response.data.extenso);
+                  })
+                  .catch(function (error) {
+                    console.log(error);
+                  });
+                }}
+              />
+            </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -106,6 +119,15 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+  },
+  buttonContainer: {
+    marginTop: 13,
+    paddingHorizontal: 10,
   },
 });
 
