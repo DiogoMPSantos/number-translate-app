@@ -8,6 +8,7 @@
 
 import React from 'react';
 import type {Node} from 'react';
+import Tts from 'react-native-tts';
 import {
   SafeAreaView,
   ScrollView,
@@ -90,6 +91,13 @@ const App: () => Node = () => {
                   api.get(`/translate/${number}`)
                   .then(function (response) {
                     Alert.alert(response.data.extenso);
+                    Tts.speak(response.data.extenso, {
+                      androidParams: {
+                        KEY_PARAM_PAN: -1,
+                        KEY_PARAM_VOLUME: 0.5,
+                        KEY_PARAM_STREAM: 'STREAM_MUSIC',
+                      },
+                    });
                   })
                   .catch(function (error) {
                     console.log(error);
